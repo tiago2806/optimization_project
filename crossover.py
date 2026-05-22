@@ -26,3 +26,8 @@ def single_point_crossover(parent1, parent2):
     child2 = parent2[:cut_point] + parent1[cut_point:]
 
     return child1, child2
+
+
+#o offspring vai ser sempre melhor do que o pior dos pais
+
+#

@@ -1,5 +1,9 @@
 import random
 import numpy as np
+from population import (
+    initialize_pop,
+    evaluate_pop
+)
 
 def pso(generate_solution, fitness_function,
         n_particles=30, n_iterations=100,

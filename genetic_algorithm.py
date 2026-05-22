@@ -6,6 +6,10 @@ def genetic_algorithm(generate_solution, fitness_function, selection,
                       crossover, mutation, pop_size, n_generations, mutation_rate,
                       verbose=True):
  
+    """
+    docstring a explicar o objectivo da função e os parameters e os outputs
+    """
+    
     '''Step 1: initialise the population and evaluate it'''
     population = [generate_solution() for _ in range(pop_size)]
     pop_fits = [fitness_function(ind) for ind in population]
