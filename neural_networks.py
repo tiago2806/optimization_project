@@ -4,8 +4,6 @@ import random
 from utils import (
     evaluate_performance,
 )
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import recall_score
 from sklearn.neural_network import MLPClassifier
 
 def create_model():
@@ -69,7 +67,7 @@ def set_weights(model, solution):
         size = model.intercepts_[i].size
 
         values = solution[idx:idx + size]
-        model.intercepts[i] = np.array(values).reshape(shape)
+        model.intercepts_[i] = np.array(values).reshape(shape)
 
         idx += size
 
