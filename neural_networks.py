@@ -31,7 +31,7 @@ def get_solution_size(model):
 
     return total_size
     
-def generate_solution(size, lower_bound, upper_bound):
+def generate_solution_uniform(size, lower_bound, upper_bound):
     """
     In this context, a solution is a vector of weights.
     Parameters
@@ -46,8 +46,11 @@ def generate_solution(size, lower_bound, upper_bound):
     
     """
     
-    return [random.uniform(lower_bound,upper_bound) for weight in range(size)]
+    return [random.uniform(lower_bound,upper_bound) for _ in range(size)]
 
+def generate_solution_gaussian(size, mean = 0, sigma = 1):
+
+    return [random.gauss(mean, sigma) for _ in range(size)]
 
 def set_weights(model, solution):
     idx = 0

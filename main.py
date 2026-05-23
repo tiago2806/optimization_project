@@ -1,11 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from structure import generate_solution, generate_solution_v2, fitness_function
-from algorithms import genetic_algorithm, pso
-from xover_operators import arithmetic_crossover, single_point_crossover
+from neural_networks import generate_solution_uniform, generate_solution_gaussian, fitness_function
+from genetic_algorithm import genetic_algorithm
+from PSO import pso
+from crossover import arithmetic_crossover, blend_crossover, single_point_crossover
 from mutators import gaussian_mutation, uniform_reset_mutation
-from selectors import tournament_selection, roulette_selection
+from selectors import rank_selection
 
 
 def run_multiple_times(algorithm_fn, params, n_runs=10):
@@ -38,7 +39,7 @@ def plot_comparison(history_ga, history_pso):
     plt.plot(history_ga, label="Genetic Algorithm")
     plt.plot(history_pso, label="PSO")
     plt.xlabel("Generation / Iteration")
-    plt.ylabel("Best Fitness (Macro Recall)")
+    plt.ylabel("Best Fitness (Recall)")
     plt.title("GA vs PSO - Average over multiple runs")
     plt.legend()
     plt.show()
@@ -55,11 +56,11 @@ if __name__ == "__main__":
     print("=" * 50)
 
     ga_params = {
-        "generate_solution": generate_solution,
+        "generate_solution": [generate_solution_uniform, generate_solution_gaussian], 
         "fitness_function": fitness_function,
-        "selection": tournament_selection,
-        "crossover": arithmetic_crossover,
-        "mutation": gaussian_mutation,
+        "selection": rank_selection,
+        "crossover": [arithmetic_crossover, single_point_crossover, blend_crossover],
+        "mutation": [gaussian_mutation, uniform_reset_mutation],
         "pop_size": 50,
         "n_generations": 50,
         "mutation_rate": 0.1,
@@ -74,7 +75,7 @@ if __name__ == "__main__":
     print("=" * 50)
 
     pso_params = {
-        "generate_solution": generate_solution,
+        "generate_solution": [generate_solution_uniform, generate_solution_gaussian],
         "fitness_function": fitness_function,
         "n_particles": 30,
         "n_iterations": 50,

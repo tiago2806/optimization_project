@@ -21,6 +21,6 @@ def rank_selection(population, fitnesses):
         if cumulative > pick:
             selected_individual = paired[i][0] #paired is a list with tuples... so tuple i, first element, the individual
 
+            return selected_individual
 
-
-    return selected_individual
+    return paired[-1][0]
