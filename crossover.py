@@ -28,6 +28,37 @@ def single_point_crossover(parent1, parent2):
     return child1, child2
 
 
+def blend_crossover(parent1, parent2, alpha = 0.3):
+    """
+    BLX-alpha crossover for real-valued vectors.
+
+    This operator is suitable for continuous optimization problems because
+    each child gene is sampled from an interval around the values of the
+    corresponding parent genes.
+
+    alpha controls how much the interval is expanded:
+    - alpha = 0.0: children are sampled only between the parents
+    - alpha > 0.0: children can also be sampled slightly outside the parents
+    """
+
+    child1 = []
+    child2 = []
+
+    for i in range(len(parent1)):
+        x1 = parent1[i]
+        x2 = parent2[i]
+
+        lower_bound = min(x1,x2)
+        higher_bound = max(x1,x2)
+
+        distance = higher_bound - lower_bound
+
+        new_lower_bound = lower_bound - alpha * distance
+        new_higher_bound = higher_bound + alpha * distance
+
+        child1.append(random.uniform(new_lower_bound, new_higher_bound))        
+        child2.append(random.uniform(new_lower_bound, new_higher_bound))        
+
+    return child1, child2 
 #o offspring vai ser sempre melhor do que o pior dos pais
 
-#

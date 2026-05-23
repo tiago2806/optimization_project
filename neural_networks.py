@@ -3,7 +3,6 @@ import numpy as np
 import random
 from utils import (
     evaluate_performance,
-    fit_model
 )
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import recall_score
@@ -67,7 +66,7 @@ def set_weights(model, solution):
         size = model.intercepts_[i].size
 
         values = solution[idx:idx + size]
-        model.intecepts[i] = np.array(values).reshape(shape)
+        model.intercepts[i] = np.array(values).reshape(shape)
 
         idx += size
 
