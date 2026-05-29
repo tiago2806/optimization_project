@@ -2,10 +2,12 @@ import random
 
 
 def gaussian_mutation(solution, mutation_rate, sigma=0.1):
-    # For each gene, with probability mutation_rate, we add a small random value
-    # The random value is drawn from a normal distribution centered at 0
-    # sigma controls how big the change can be - small sigma = small nudges
-    # This is the real-valued equivalent of bit-flip mutation from the knapsack problem
+    """
+    For each gene, with probability mutation_rate, we add a small random value
+    The random value is drawn from a normal distribution centered at 0
+    sigma controls how big the change can be - small sigma = small nudges
+    This is the real-valued equivalent of bit-flip mutation from the knapsack problem
+    """
 
     mutated = [gene for gene in solution]  # copy the solution
 

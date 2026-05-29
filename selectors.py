@@ -1,6 +1,22 @@
 import random
 
 
+def tournament_selection(population, fitnesses, tournament_size = 3, maximize=True):
+    indices = random.sample(range(len(population)), tournament_size)
+
+    best_index = indices[0]
+
+    for i in indices[1:]:
+        if maximize:
+            if fitnesses[i]>fitnesses[best_index]:
+                best_index = i
+        else:
+            if fitnesses[i]<fitnesses[best_index]:
+                best_index = i
+            
+    return population[best_index]
+
+
 def rank_selection(population, fitnesses):
 
     paired = list(zip(population, fitnesses)) #zip combines each individual to its fitness using tuples
