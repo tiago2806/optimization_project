@@ -19,11 +19,13 @@ def gaussian_mutation(solution, mutation_rate, sigma=0.1):
 
 
 def uniform_reset_mutation(solution, mutation_rate, lower_bound=-1.0, upper_bound=1.0):
-    # For each gene, with probability mutation_rate, we replace it with a completely new random value
-    # Unlike gaussian mutation (which nudges), this can jump anywhere in the search space
-    # Useful for escaping local optima when gaussian mutation is not enough
+    ''' 
+    For each gene, with probability mutation_rate, we replace it with a completely new random value
+    Unlike gaussian mutation (which nudges), this can jump anywhere in the search space
+    Useful for escaping local optima when gaussian mutation is not enough 
+    '''
 
-    mutated = [gene for gene in solution]  # copy the solution
+    mutated = [gene for gene in solution]
 
     for i in range(len(mutated)):
         if random.random() < mutation_rate:

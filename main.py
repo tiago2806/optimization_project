@@ -21,5 +21,9 @@ y = parkinson['status']
 X_train, X_test, y_train, y_test = train_test_split(X,y , test_size=0.2, stratify=y)
 
 
-results_gridsearch = pd.DataFrame(columns = ['initialization','selection', 'crossover', 'mutation'])
+results_gridsearch = pd.DataFrame(columns = ['initialization','selection', 'crossover', 'mutation', 'fitness score'])
 
+
+model = create_model()
+model = initialize_model(model, X_train, y_train)
+size = get_solution_size(model) 
