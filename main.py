@@ -19,7 +19,7 @@ parkinson = pd.read_csv('parkinson.csv')
 X = parkinson.drop('status', axis = 1)
 y = parkinson['status']
 
-X_train, X_test, y_train, y_test = train_test_split(X,y , test_size=0.2, stratify=y)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
 
 results_gridsearch = pd.DataFrame(columns = ['initalization', 'selection', 'crossover', 'mutation', 'mutation_rate', 'fitness score'])

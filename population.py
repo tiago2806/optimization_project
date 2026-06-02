@@ -1,4 +1,4 @@
-def initialize_pop(individual_generator, pop_size):
+def initialize_pop(individual_generator, pop_size = 100):
     '''Returning a list with pop_size number of individuals'''
     return [individual_generator() for _ in range(pop_size)]
 

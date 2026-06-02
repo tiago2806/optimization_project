@@ -14,7 +14,7 @@ for first_parameter in p1:
     for second_parameter in p2:
         #caluclaute the fitness using these parameters
 
-        fitness = first_parameter**2 + second_parameter**""
+        fitness = first_parameter**2 + second_parameter**2
 
         new_row = {
             'p1': first_parameter,
