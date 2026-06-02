@@ -71,7 +71,7 @@ def set_weights(model, solution):
 
         idx += size
 
-def fitness_function(solution, model, X_train, y_train ):
+def fitness_function(solution, model, X_train, y_train):
     """
     Solution is just a vector of weights. MLP expects wieghts in matrices and vectors
     """
