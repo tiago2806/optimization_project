@@ -21,6 +21,9 @@ y = parkinson['status']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
+model = create_model()
+model = initialize_model(model, X_train, y_train)
+size = get_solution_size(model) 
 
 results_gridsearch = pd.DataFrame(columns = ['initalization', 'selection', 'crossover', 'mutation', 'mutation_rate', 'fitness score'])
 
@@ -54,7 +57,7 @@ for first_parameter in initialization:
 
         #avg 30 runs ga <- score destes parametros
         #append dataframe com os parametros e o score
-                    score = fitness_function(best_solution, MLP, X_train, y_train)
+                    score = fitness_function(best_solution, model, X_train, y_train)
                     sum_result += score
 
             options = {
@@ -67,6 +70,3 @@ for first_parameter in initialization:
             }
 
 results_gridsearch = results_gridsearch.append(options, ignore_index = True)
-model = create_model()
-model = initialize_model(model, X_train, y_train)
-size = get_solution_size(model) 
