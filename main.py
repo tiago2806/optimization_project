@@ -109,25 +109,27 @@ best_crossover_function = crossover[best_GA_combination["crossover"]]
 best_mutation_function = mutation[best_GA_combination["mutation"]]
 best_mutation_rate = best_GA_combination["mutation_rate"]
 
-test_scores = []
+test_scores_GA = []
 
 for i in range(30): #run 30 times on the test set, save the score per run, then average the score, to get a final, robust score, and not get a good score, because of a lucky run.
-    best_solution, history = genetic_algorithm(
-        best_initialization_function,
-        fitness_for_project,
-        best_selection_function,
-        best_crossover_function,
-        best_mutation_function,
-        100,
-        100,
-        best_mutation_rate,
+    best_solution, history=genetic_algorithm(
+        generate_solution=best_initialization_function,
+        fitness_function=fitness_for_project,
+        selection=best_selection_function,
+        crossover=best_crossover_function,
+        mutation=best_mutation_function,
+        pop_size=100,
+        n_generations=100,
+        mutation_rate=best_mutation_rate,
         verbose=True
     )
 
     test_score_per_run = fitness_function(best_solution, model, X_test, y_test)
-    test_scores.append(test_score_per_run)
+    test_scores_GA.append(test_score_per_run)
 
-final_avg_test_score = sum(test_scores) / len(test_scores)
+plt.plot(test_scores_GA)
+
+final_avg_test_score = sum(test_scores_GA) / len(test_scores_GA)
 
 print(final_avg_test_score)
 
@@ -163,7 +165,7 @@ for initialization_name, initialization_function in initialization.items():
                         c2=c2,
                         verbose=False
                     )
-                    # Same logic as GA: take the last value of history (best fitness of last iteration)
+                    # Same logic as GA: take the last value of history (best fitness of each iteration)
                     score = history[-1]
                     all_histories += score
  
@@ -200,6 +202,8 @@ for i in range(30):
     )
     test_score_per_run = fitness_function(best_position, model, X_test, y_test)
     test_scores_PSO.append(test_score_per_run)
+
+plt.plot(test_scores_PSO)
  
 final_avg_test_score_PSO = sum(test_scores_PSO) / len(test_scores_PSO)
 print(f"PSO final avg test score: {final_avg_test_score_PSO:.4f}")
