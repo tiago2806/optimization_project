@@ -11,7 +11,7 @@ def create_model():
     Only one iteration just to initialize the weights.
     """
     return MLPClassifier(
-        hidden_layer_sizes=(10,),
+        hidden_layer_sizes=(10,),   
         max_iter = 1,
         random_state=42
     )
@@ -115,7 +115,7 @@ def set_weights(model, solution):
 
         idx += size
 
-def fitness_function(solution, model, X, y):
+def fitness_function(solution, model, X, y):  
     """
     This function evaluates the fitness of a candidate solution.
 

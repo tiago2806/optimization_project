@@ -115,7 +115,7 @@ best_mutation_function = mutation[best_GA_combination["mutation"]]
 best_mutation_rate = best_GA_combination["mutation_rate"]
 
 print()
-print("Run 5 iterations with the best combination of parameterso of the genetic algorithm on the test set:")
+print("Run 2 iterations with the best combination of parameters of the genetic algorithm on the test set:")
 print()
 test_scores_GA = []
 
