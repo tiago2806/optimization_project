@@ -125,7 +125,7 @@ print()
 test_scores_GA = []
 all_histories_GA = []  #list where each element is the history of the run
 
-for i in range(N_RUNS): 
+for i in range(N_RUNS):  #run using the training set, then evaluate on the test set
     best_solution, history=genetic_algorithm(
         generate_solution=best_initialization_function,
         fitness_function=fitness_for_project,
