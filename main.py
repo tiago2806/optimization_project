@@ -130,3 +130,76 @@ for i in range(30): #run 30 times on the test set, save the score per run, then 
 final_avg_test_score = sum(test_scores) / len(test_scores)
 
 print(final_avg_test_score)
+
+##Agora a parte do PSO e para perceberes melhor:
+
+# PSO has no crossover/mutation operators, so we grid search over:
+#   - initialization (same two as GA)
+#   - w  (inertia weight)
+#   - c1 (cognitive component)
+#   - c2 (social component)
+
+results_gridsearch_PSO = pd.DataFrame(columns=['initialization', 'w', 'c1', 'c2', 'results'])
+
+##Isto aqui são exemplos de valores (que vamos ter de ir experimentando) 
+w_values  = [0.4, 0.7, 0.9]
+c1_values = [1.0, 1.5, 2.0]
+c2_values = [1.0, 1.5, 2.0]
+ 
+for initialization_name, initialization_function in initialization.items():
+    for w in w_values:
+        for c1 in c1_values:
+            for c2 in c2_values:
+                all_histories = 0
+                for i in range(30):
+                    random.seed(i)
+                    best_position, best_fitness, history = pso(
+                        initialization_function,
+                        fitness_for_project,
+                        n_particles=30,
+                        n_iterations=100,
+                        w=w,
+                        c1=c1,
+                        c2=c2,
+                        verbose=False
+                    )
+                    # Same logic as GA: take the last value of history (best fitness of last iteration)
+                    score = history[-1]
+                    all_histories += score
+ 
+                options = {
+                    'initialization': initialization_name,
+                    'w':  w,
+                    'c1': c1,
+                    'c2': c2,
+                    'results': all_histories / 30
+                }
+                results_gridsearch_PSO = results_gridsearch_PSO.append(options, ignore_index=True)
+ 
+# Find best PSO combination and evaluate on test set
+best_PSO_combination = results_gridsearch_PSO.sort_values("results", ascending=False).iloc[0]
+ 
+best_PSO_initialization = initialization[best_PSO_combination["initialization"]]
+best_w  = best_PSO_combination["w"]
+best_c1 = best_PSO_combination["c1"]
+best_c2 = best_PSO_combination["c2"]
+ 
+test_scores_PSO = []
+ 
+for i in range(30):
+    random.seed(i)
+    best_position, best_fitness, history = pso(
+        best_PSO_initialization,
+        fitness_for_project,
+        n_particles=30,
+        n_iterations=100,
+        w=best_w,
+        c1=best_c1,
+        c2=best_c2,
+        verbose=False
+    )
+    test_score_per_run = fitness_function(best_position, model, X_test, y_test)
+    test_scores_PSO.append(test_score_per_run)
+ 
+final_avg_test_score_PSO = sum(test_scores_PSO) / len(test_scores_PSO)
+print(f"PSO final avg test score: {final_avg_test_score_PSO:.4f}")
