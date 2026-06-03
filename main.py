@@ -78,8 +78,8 @@ for initialization_name, intialization_function in initialization.items():
                             selection_operator,
                             crossover_operator,
                             mutation_operator,
-                            100,
                             1000,
+                            100,
                             alpha,
                             verbose=True
                         )
