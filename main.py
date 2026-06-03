@@ -222,7 +222,7 @@ best_c1 = best_PSO_combination["c1"]
 best_c2 = best_PSO_combination["c2"]
  
 test_scores_PSO = []
-all_histories_PSO_test = []
+all_histories_PSO = []
 
 for i in range(N_RUNS):
     random.seed(i)
@@ -237,33 +237,33 @@ for i in range(N_RUNS):
         verbose=False
     )
 
-    all_histories_PSO_test.append(history)
+    all_histories_PSO.append(history)
     
     test_score_per_run = fitness_function(best_position, model, X_test, y_test)
     test_scores_PSO.append(test_score_per_run)
 
 
-avg_history_PSO_test = []
+avg_history_PSO = []
 
-n_iterations_recorded = len(all_histories_PSO_test[0])
+n_iterations_recorded = len(all_histories_PSO[0])
 
 for iteration in range(n_iterations_recorded):
     total = 0
 
     for run in range(N_RUNS):
-        total += all_histories_PSO_test[run][iteration]
+        total += all_histories_PSO[run][iteration]
 
-    avg_history_PSO_test.append(total / N_RUNS)
+    avg_history_PSO.append(total / N_RUNS)
 
-plt.plot(avg_history_PSO_test)
+plt.plot(avg_history_PSO)
 plt.xlabel("Iteration")
 plt.ylabel("Average Best Fitness") #média da melhor fitness daquela geração/iteração ao longo das runs
 plt.title("PSO convergence per generation - average over runs")
 plt.show()
 
 
-plt.plot(avg_history_GA_test, label="GA")
-plt.plot(avg_history_PSO_test, label="PSO")
+plt.plot(avg_history_GA, label="GA")
+plt.plot(avg_history_PSO, label="PSO")
 plt.xlabel("Generation / Iteration")
 plt.ylabel("Average Best Fitness")
 plt.title("GA vs PSO convergence")
