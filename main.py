@@ -104,6 +104,10 @@ for initialization_name, intialization_function in initialization.items():
 
 results_gridsearch_GA = pd.DataFrame(results_list_GA)
 
+top5_GA = results_gridsearch_GA.sort_values("results", ascending=False).head(5)
+print(top5_GA)
+top5_GA.to_csv("top5_GA_combinations.csv", index=False)
+
 best_GA_combination = results_gridsearch_GA.sort_values("results", ascending=False).iloc[0,:-1]
 
 print(results_gridsearch_GA.sort_values("results", ascending=False).head())
@@ -203,6 +207,11 @@ for initialization_name, initialization_function in initialization.items():
  
 
 results_gridsearch_PSO = pd.DataFrame(results_list_PSO)
+
+top5_PSO = results_gridsearch_PSO.sort_values("results", ascending=False).head(5)
+print(top5_PSO)
+
+top5_PSO.to_csv("top5_PSO_combinations.csv", index=False)
 
 # Find best PSO combination and evaluate on test set
 best_PSO_combination = results_gridsearch_PSO.sort_values("results", ascending=False).iloc[0,:-1]
