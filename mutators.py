@@ -7,6 +7,15 @@ def gaussian_mutation(solution, mutation_rate, sigma=0.1):
     The random value is drawn from a normal distribution centered at 0
     sigma controls how big the change can be - small sigma = small nudges
     This is the real-valued equivalent of bit-flip mutation from the knapsack problem
+
+    Parameters:
+    - solution -> list: vector of weights and biases
+    - mutation_rate -> list: different float values
+    - sigma -> float: standard deviation of the normal distribution
+
+    -----------------
+    Output:
+    mutated solution -> list: vector of weights and biases
     """
 
     mutated = [gene for gene in solution]  # copy the solution
@@ -23,6 +32,16 @@ def uniform_reset_mutation(solution, mutation_rate, lower_bound=-1.0, upper_boun
     For each gene, with probability mutation_rate, we replace it with a completely new random value
     Unlike gaussian mutation (which nudges), this can jump anywhere in the search space
     Useful for escaping local optima when gaussian mutation is not enough 
+
+    Parameters:
+    - solution -> list: vector of weights and biases
+    - mutation_rate -> list: different float values
+    - lower_bound -> float: defines the minimum value
+    - upper_bound -> float: defines the maximum value
+
+    --------------
+    Output:
+    - mutated_solution -> list: vector of weights and biases
     '''
 
     mutated = [gene for gene in solution]

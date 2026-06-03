@@ -3,7 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
-from neural_networks import (generate_solution_uniform, generate_solution_gaussian, fitness_function, create_model, initialize_model, get_solution_size)
+from neural_networks import (generate_solution_uniform, 
+                            generate_solution_gaussian, 
+                            fitness_function, create_model, 
+                            initialize_model, 
+                            get_solution_size
+                        )
 from genetic_algorithm import genetic_algorithm
 from PSO import pso
 from crossover import arithmetic_crossover, blend_crossover, single_point_crossover
@@ -28,16 +33,13 @@ size = get_solution_size(model)
 def generate_uniform_for_project():
     return generate_solution_uniform(size, -1, 1)
 
-
 def generate_gaussian_for_project():
     return generate_solution_gaussian(size, 0, 1)
 
 def fitness_for_project(solution):
     return fitness_function(solution, model, X_train, y_train)
 
-results_gridsearch = pd.DataFrame(columns = ['initalization', 'selection', 'crossover', 'mutation', 'mutation_rate', 'fitness score'])
-
-print(results_gridsearch.head())
+results_list_GA = []
 
 initialization = {
     "uniform": generate_uniform_for_project,
@@ -70,7 +72,7 @@ for initialization_name, intialization_function in initialization.items():
             for mutation_name, mutation_operator in mutation.items():
                 for alpha in mutation_rate:
                     all_histories = 0
-                    for i in range(30):
+                    for i in range(2):
                         random.seed(i)
                         best_solution, history = genetic_algorithm(
                             intialization_function, 
@@ -78,7 +80,7 @@ for initialization_name, intialization_function in initialization.items():
                             selection_operator,
                             crossover_operator,
                             mutation_operator,
-                            1000,
+                            100,
                             100,
                             alpha,
                             verbose=True
@@ -94,14 +96,17 @@ for initialization_name, intialization_function in initialization.items():
                         'crossover': crossover_name,
                         'mutation': mutation_name,
                         'mutation_rate': alpha,
-                        'results': all_histories/30
+                        'results': all_histories/2
                     }
 
-                    results_gridsearch = results_gridsearch.append(options, ignore_index = True)
+                    results_list_GA.append(options)
                     #cada row da resutls_gridsearch DataFrame corresponde a uma combinação de parâmetros e o valor na coluna results, corresponde à fitness final associada a essa combinação
 
+results_gridsearch_GA = pd.DataFrame(results_list_GA)
 
-best_GA_combination = results_gridsearch.sort_values("results", ascending=False).iloc[0,:-1]
+best_GA_combination = results_gridsearch_GA.sort_values("results", ascending=False).iloc[0,:-1]
+
+print(results_gridsearch_GA.sort_values("results", ascending=False))
 
 best_initialization_function = initialization[best_GA_combination["initialization"]]
 best_selection_function = selection[best_GA_combination["selection"]]
@@ -109,9 +114,12 @@ best_crossover_function = crossover[best_GA_combination["crossover"]]
 best_mutation_function = mutation[best_GA_combination["mutation"]]
 best_mutation_rate = best_GA_combination["mutation_rate"]
 
+print()
+print("Run 5 iterations with the best combination of parameterso of the genetic algorithm on the test set:")
+print()
 test_scores_GA = []
 
-for i in range(30): #run 30 times on the test set, save the score per run, then average the score, to get a final, robust score, and not get a good score, because of a lucky run.
+for i in range(2): #run 5 times on the test set, save the score per run, then average the score, to get a final, robust score, and not get a good score, because of a lucky run.
     best_solution, history=genetic_algorithm(
         generate_solution=best_initialization_function,
         fitness_function=fitness_for_project,
@@ -127,11 +135,12 @@ for i in range(30): #run 30 times on the test set, save the score per run, then 
     test_score_per_run = fitness_function(best_solution, model, X_test, y_test)
     test_scores_GA.append(test_score_per_run)
 
-plt.plot(test_scores_GA)
+print(plt.plot(test_scores_GA))
 
-final_avg_test_score = sum(test_scores_GA) / len(test_scores_GA)
+final_avg_test_score_GA = sum(test_scores_GA) / len(test_scores_GA)
 
-print(final_avg_test_score)
+print()
+print(f"PSO final avg test score: {final_avg_test_score_GA:.4f}")
 
 ##Agora a parte do PSO e para perceberes melhor:
 
@@ -141,7 +150,7 @@ print(final_avg_test_score)
 #   - c1 (cognitive component)
 #   - c2 (social component)
 
-results_gridsearch_PSO = pd.DataFrame(columns=['initialization', 'w', 'c1', 'c2', 'results'])
+results_list_PSO = []
 
 ##Isto aqui são exemplos de valores (que vamos ter de ir experimentando) 
 w_values  = [0.4, 0.7, 0.9]
@@ -153,7 +162,7 @@ for initialization_name, initialization_function in initialization.items():
         for c1 in c1_values:
             for c2 in c2_values:
                 all_histories = 0
-                for i in range(30):
+                for i in range(2):
                     random.seed(i)
                     best_position, best_fitness, history = pso(
                         initialization_function,
@@ -174,12 +183,16 @@ for initialization_name, initialization_function in initialization.items():
                     'w':  w,
                     'c1': c1,
                     'c2': c2,
-                    'results': all_histories / 30
+                    'results': all_histories / 2
                 }
-                results_gridsearch_PSO = results_gridsearch_PSO.append(options, ignore_index=True)
+
+                results_list_PSO.append(options)
  
+
+results_gridsearch_PSO = pd.DataFrame(results_list_PSO)
+
 # Find best PSO combination and evaluate on test set
-best_PSO_combination = results_gridsearch_PSO.sort_values("results", ascending=False).iloc[0]
+best_PSO_combination = results_gridsearch_PSO.sort_values("results", ascending=False).iloc[0,:-1]
  
 best_PSO_initialization = initialization[best_PSO_combination["initialization"]]
 best_w  = best_PSO_combination["w"]
@@ -188,7 +201,7 @@ best_c2 = best_PSO_combination["c2"]
  
 test_scores_PSO = []
  
-for i in range(30):
+for i in range(2):
     random.seed(i)
     best_position, best_fitness, history = pso(
         best_PSO_initialization,
@@ -203,7 +216,23 @@ for i in range(30):
     test_score_per_run = fitness_function(best_position, model, X_test, y_test)
     test_scores_PSO.append(test_score_per_run)
 
-plt.plot(test_scores_PSO)
+
+print(plt.plot(test_scores_PSO))
  
 final_avg_test_score_PSO = sum(test_scores_PSO) / len(test_scores_PSO)
 print(f"PSO final avg test score: {final_avg_test_score_PSO:.4f}")
+
+
+print("\n=== Final Results ===")
+
+print("\n=== Best GA parameters ===")
+print(best_GA_combination)
+ 
+print("\n=== Best PSO parameters ===")
+print(best_PSO_combination)
+
+print("Comparison between algorithms on the test set:\n")
+
+print(f"GA  best avg test score: {final_avg_test_score_GA:.4f}\n")
+print(f"PSO best avg test score: {final_avg_test_score_PSO:.4f}")
+
