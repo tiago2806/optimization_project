@@ -62,9 +62,9 @@ mutation = {
     'uniform-reset': uniform_reset_mutation
 }
 
-mutation_rate = [0.01, 0.05, 0.1]
+mutation_rate = [0.01, 0.05, 0.1, 0.3]
 
-
+N_RUNS = 3
 
 for initialization_name, intialization_function in initialization.items():
     for selection_name, selection_operator in selection.items():
@@ -72,7 +72,7 @@ for initialization_name, intialization_function in initialization.items():
             for mutation_name, mutation_operator in mutation.items():
                 for alpha in mutation_rate:
                     all_histories = 0
-                    for i in range(2):
+                    for i in range(N_RUNS):
                         random.seed(i)
                         best_solution, history = genetic_algorithm(
                             intialization_function, 
@@ -96,7 +96,7 @@ for initialization_name, intialization_function in initialization.items():
                         'crossover': crossover_name,
                         'mutation': mutation_name,
                         'mutation_rate': alpha,
-                        'results': all_histories/2
+                        'results': all_histories/N_RUNS
                     }
 
                     results_list_GA.append(options)
@@ -106,7 +106,7 @@ results_gridsearch_GA = pd.DataFrame(results_list_GA)
 
 best_GA_combination = results_gridsearch_GA.sort_values("results", ascending=False).iloc[0,:-1]
 
-print(results_gridsearch_GA.sort_values("results", ascending=False))
+print(results_gridsearch_GA.sort_values("results", ascending=False).head())
 
 best_initialization_function = initialization[best_GA_combination["initialization"]]
 best_selection_function = selection[best_GA_combination["selection"]]
@@ -117,9 +117,11 @@ best_mutation_rate = best_GA_combination["mutation_rate"]
 print()
 print("Run 2 iterations with the best combination of parameters of the genetic algorithm on the test set:")
 print()
-test_scores_GA = []
 
-for i in range(2): #run 5 times on the test set, save the score per run, then average the score, to get a final, robust score, and not get a good score, because of a lucky run.
+test_scores_GA = []
+all_histories_GA_test = []  #list where each element is the history of the run
+
+for i in range(N_RUNS): #run 5 times on the test set, save the score per run, then average the score, to get a final, robust score, and not get a good score, because of a lucky run.
     best_solution, history=genetic_algorithm(
         generate_solution=best_initialization_function,
         fitness_function=fitness_for_project,
@@ -127,28 +129,39 @@ for i in range(2): #run 5 times on the test set, save the score per run, then av
         crossover=best_crossover_function,
         mutation=best_mutation_function,
         pop_size=100,
-        n_generations=100,
+        n_generations=300,  #ajustar para saber onde é que é interessante parar
         mutation_rate=best_mutation_rate,
         verbose=True
     )
 
+    all_histories_GA_test.append(history)
+
     test_score_per_run = fitness_function(best_solution, model, X_test, y_test)
     test_scores_GA.append(test_score_per_run)
 
-print(plt.plot(test_scores_GA))
+avg_history_GA = []   #each element is the avg best fitness of each generation over the different runs
+
+n_generations = len(all_histories_GA_test[0])
+
+for generation in range(n_generations):
+    total = 0
+
+    for run in range(N_RUNS):
+        total += all_histories_GA_test[run][generation]
+
+    avg_history_GA.append(total / N_RUNS)
+
+plt.plot(avg_history_GA)
+plt.xlabel("Generation")
+plt.ylabel("Best Fitness")
+plt.title("GA convergence per generation - average over runs")
+plt.show()
 
 final_avg_test_score_GA = sum(test_scores_GA) / len(test_scores_GA)
 
 print()
 print(f"PSO final avg test score: {final_avg_test_score_GA:.4f}")
 
-##Agora a parte do PSO e para perceberes melhor:
-
-# PSO has no crossover/mutation operators, so we grid search over:
-#   - initialization (same two as GA)
-#   - w  (inertia weight)
-#   - c1 (cognitive component)
-#   - c2 (social component)
 
 results_list_PSO = []
 
@@ -162,7 +175,7 @@ for initialization_name, initialization_function in initialization.items():
         for c1 in c1_values:
             for c2 in c2_values:
                 all_histories = 0
-                for i in range(2):
+                for i in range(N_RUNS):
                     random.seed(i)
                     best_position, best_fitness, history = pso(
                         initialization_function,
@@ -183,7 +196,7 @@ for initialization_name, initialization_function in initialization.items():
                     'w':  w,
                     'c1': c1,
                     'c2': c2,
-                    'results': all_histories / 2
+                    'results': all_histories / N_RUNS
                 }
 
                 results_list_PSO.append(options)
@@ -200,8 +213,9 @@ best_c1 = best_PSO_combination["c1"]
 best_c2 = best_PSO_combination["c2"]
  
 test_scores_PSO = []
- 
-for i in range(2):
+all_histories_PSO = []
+
+for i in range(3):
     random.seed(i)
     best_position, best_fitness, history = pso(
         best_PSO_initialization,
@@ -213,12 +227,39 @@ for i in range(2):
         c2=best_c2,
         verbose=False
     )
+
+    all_histories_PSO.append(history)
+    
     test_score_per_run = fitness_function(best_position, model, X_test, y_test)
     test_scores_PSO.append(test_score_per_run)
 
 
-print(plt.plot(test_scores_PSO))
- 
+avg_history_PSO_test = []
+
+n_iterations_recorded = len(all_histories_PSO[0])
+
+for iteration in range(n_iterations_recorded):
+    total = 0
+
+    for run in range(N_RUNS):
+        total += all_histories_PSO[run][iteration]
+
+    avg_history_PSO_test.append(total / N_RUNS)
+
+plt.plot(avg_history_PSO_test)
+plt.xlabel("Iteration")
+plt.ylabel("Best Fitness")
+plt.title("PSO convergence per generation - average over runs")
+plt.show()
+
+plt.plot(avg_history_GA, label="GA")
+plt.plot(avg_history_PSO_test, label="PSO")
+plt.xlabel("Generation / Iteration")
+plt.ylabel("Best Fitness")
+plt.title("GA vs PSO convergence")
+plt.legend()
+plt.show()
+
 final_avg_test_score_PSO = sum(test_scores_PSO) / len(test_scores_PSO)
 print(f"PSO final avg test score: {final_avg_test_score_PSO:.4f}")
 
