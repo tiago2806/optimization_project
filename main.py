@@ -104,13 +104,12 @@ for initialization_name, intialization_function in initialization.items():
 
 results_gridsearch_GA = pd.DataFrame(results_list_GA)
 
-top5_GA = results_gridsearch_GA.sort_values("results", ascending=False).head(5)
+top5_GA = results_gridsearch_GA.sort_values("results", ascending=False).head()
 print(top5_GA)
 top5_GA.to_csv("top5_GA_combinations.csv", index=False)
 
 best_GA_combination = results_gridsearch_GA.sort_values("results", ascending=False).iloc[0,:-1]
 
-print(results_gridsearch_GA.sort_values("results", ascending=False).head())
 
 best_initialization_function = initialization[best_GA_combination["initialization"]]
 best_selection_function = selection[best_GA_combination["selection"]]
@@ -138,7 +137,7 @@ for i in range(N_RUNS):  #run using the training set, then evaluate on the test 
         verbose=True
     )
 
-    all_histories_GA.append(history)  #[bG0,bG1,..,bG100] isto 5 runs
+    all_histories_GA.append(history)  #[bG0,bG1,..,bG100] isto é um elemento (Run 1) isto N_RUNS vezes
 
     test_score_per_run = fitness_function(best_solution, model, X_test, y_test)
     test_scores_GA.append(test_score_per_run)

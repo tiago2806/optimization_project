@@ -1,0 +1,6 @@
+initialization,selection,crossover,mutation,mutation_rate,results
+uniform,tournament,single,gaussian,0.1,0.949314624975664
+uniform,tournament,single,uniform-reset,0.01,0.9467608427487347
+gaussian,tournament,single,uniform-reset,0.01,0.9419834106004318
+uniform,tournament,single,gaussian,0.3,0.9380285086869952
+gaussian,tournament,blend,gaussian,0.1,0.9313094875718023
