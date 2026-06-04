@@ -188,7 +188,7 @@ for initialization_name, initialization_function in initialization.items():
                         w=w,
                         c1=c1,
                         c2=c2,
-                        verbose=False
+                        verbose=True
                     )
                     # Same logic as GA: take the last value of history (best fitness of each iteration)
                     score = history[-1]
@@ -233,7 +233,7 @@ for i in range(N_RUNS):
         w=best_w,
         c1=best_c1,
         c2=best_c2,
-        verbose=False
+        verbose=True
     )
 
     all_histories_PSO.append(history)
