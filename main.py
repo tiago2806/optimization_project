@@ -86,9 +86,8 @@ for initialization_name, intialization_function in initialization.items():
                             verbose=True
                         )
                         
-                        score = history[-1] #PARA CADA RUN, history é uma lista em que cada elemetno é o melhor fitness da geração [G0,G1,...,G100] e o best fitness é considerado o ultimo valor
-                        all_histories_GA += score #adicionamos essa fitness, respetiva ao numero da run, à lista all_histories
-                        #a fitness final de uma combinação de parametros, vai ser a media final da lista all_histories, que contém a melhor fitness de cada run
+                        score = history[-1] 
+                        all_histories_GA += score 
 
                     options = {
                         'initialization': initialization_name,
@@ -100,7 +99,7 @@ for initialization_name, intialization_function in initialization.items():
                     }
 
                     results_list_GA.append(options)
-                    #cada row da resutls_gridsearch DataFrame corresponde a uma combinação de parâmetros e o valor na coluna results, corresponde à fitness final associada a essa combinação
+                    
 
 results_gridsearch_GA = pd.DataFrame(results_list_GA)
 
@@ -118,7 +117,7 @@ best_mutation_function = mutation[best_GA_combination["mutation"]]
 best_mutation_rate = best_GA_combination["mutation_rate"]
 
 print()
-print("Run 2 iterations with the best combination of parameters of the genetic algorithm on the test set:")
+print("Run 3 iterations with the best combination of parameters of the genetic algorithm on the test set:")
 print()
 
 test_scores_GA = []
@@ -132,12 +131,12 @@ for i in range(N_RUNS):  #run using the training set, then evaluate on the test 
         crossover=best_crossover_function,
         mutation=best_mutation_function,
         pop_size=100,
-        n_generations=100,  #ajustar para saber onde é que é interessante parar
+        n_generations=100,  
         mutation_rate=best_mutation_rate,
         verbose=True
     )
 
-    all_histories_GA.append(history)  #[bG0,bG1,..,bG100] isto é um elemento (Run 1) isto N_RUNS vezes
+    all_histories_GA.append(history)
 
     test_score_per_run = fitness_function(best_solution, model, X_test, y_test)
     test_scores_GA.append(test_score_per_run)
@@ -152,11 +151,11 @@ for generation in range(n_generations):
     for run in range(N_RUNS):
         total += all_histories_GA[run][generation]
 
-    avg_history_GA.append(total / N_RUNS) #média fitness por geração over as 5 runs
+    avg_history_GA.append(total / N_RUNS)
 
 plt.plot(avg_history_GA)
 plt.xlabel("Generation")
-plt.ylabel("Average Best Fitness") #média da melhor fitness daquela geração/iteração ao longo das runs
+plt.ylabel("Average Best Fitness") 
 plt.title("GA convergence per generation - average over runs")
 plt.show()
 
@@ -168,7 +167,6 @@ print(f"GA final avg test score: {final_avg_test_score_GA:.4f}")
 
 results_list_PSO = []
 
-##Isto aqui são exemplos de valores (que vamos ter de ir experimentando) 
 w_values  = [0.4, 0.7, 0.9]
 c1_values = [1.0, 1.5, 2.0]
 c2_values = [1.0, 1.5, 2.0]
@@ -256,7 +254,7 @@ for iteration in range(n_iterations_recorded):
 
 plt.plot(avg_history_PSO)
 plt.xlabel("Iteration")
-plt.ylabel("Average Best Fitness") #média da melhor fitness daquela geração/iteração ao longo das runs
+plt.ylabel("Average Best Fitness") 
 plt.title("PSO convergence per generation - average over runs")
 plt.show()
 
